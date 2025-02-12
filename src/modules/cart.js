@@ -1,4 +1,5 @@
 import renderCart from "./renderCart";
+import postData from "./postData";
 
 const cart = () => {
     const cartButton = document.getElementById("cartButton");
@@ -6,6 +7,7 @@ const cart = () => {
     const cartCloseButton = document.getElementById("cartCloseButton");
     const cartTotal = document.querySelector(".cart-total > span");
     // Находим спан внутри элемента с классом .cart-total, в нем содержится сумма стоимости товаров в корзине
+    const cartConfirmButton = document.querySelector(".cart-confirm");
     const goodsContainer = document.querySelector(".goods");
     const cartWrapper = document.querySelector(".cart-wrapper");
 
@@ -70,6 +72,25 @@ const cart = () => {
             cartTotal.textContent = cart.reduce((sum, goodItem) => {
                 return sum + goodItem.price;
             }, 0);
+        }
+    });
+
+// Логика кнопки оформить заказ
+    cartConfirmButton.addEventListener("click", (event) => {
+        const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+
+        if(cart.length !== 0) { // Проверяет, что в корзине есть товары
+            postData(cart).then(() => { // отправить данные корзины на сервер, потом:
+                localStorage.removeItem('cart'); // очистить массив корзины
+
+                cartTotal.textContent = '0'; // сумма товаров = 0
+
+                cartWrapper.innerHTML = ''; // очистить поле корзины
+                cartWrapper.insertAdjacentHTML('beforeend', `
+            <div id="cart-empty">
+                Спасибо за заказ!
+            </div>`);
+            });
         }
     });
 };

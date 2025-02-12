@@ -1,13 +1,7 @@
-const postData = () => {
-    return fetch('http://localhost:3000/goods', {
+const postData = (cart) => {
+    return fetch('https://jsonplaceholder.typicode.com/posts', {
         method: 'POST', // метод отправки данных на сервер
-        body: JSON.stringify({ // тело запроса, будет из объекта преобразовано в строку с помощью JSON.stringify
-            title: "Ведьмак 3",
-            price: 3000,
-            sale: true,
-            img: "https://cdn1.ozone.ru/multimedia/c400/1023547851.jpg",
-            category: "Игры и софт"
-        }),
+        body: JSON.stringify(cart), // тело запроса, будет из массива преобразовано в строку с помощью JSON.stringify
         headers: {
             'Content-type': 'application/json; charset=UTF-8', // заголовки для сервера
         },
