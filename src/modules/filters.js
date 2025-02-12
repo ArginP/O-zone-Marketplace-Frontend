@@ -12,8 +12,13 @@ export const searchFilter = (goods, value) => {
 // Фильтрация массива товаров по выбору категории
 export const categoryFilter = (goods, text) => {
     return goods.filter((item) => {
-        return item.category === text; // фильтрует массив goods т.о., чтобы значение поля category каждого объекта
-        // соответствовало переданному значению фильтра text
+        if(text === 'Сбросить') { // если клик по кнопке сбросить
+            return goods; // вернуть весь массив товаров
+        } else {
+            return item.category === text; // фильтрует массив goods т.о., чтобы значение поля category каждого объекта
+            // соответствовало переданному значению фильтра text
+        }
+
     });
 };
 

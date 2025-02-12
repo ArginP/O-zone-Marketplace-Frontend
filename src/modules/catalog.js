@@ -8,20 +8,24 @@ const catalog = () => {
     const catalogModalItem = document.querySelectorAll(".catalog li");
     // выбирает все элементы li внутри родительского элемента с классом catalog
 
-    let isOpen = false; // Костыль переключения окна на открыто/закрыто. Лучше реализовать через toggle
+    let isOpen = false; // Костыль для переключения окна на открыто/закрыто
 
-    catalogButton.addEventListener("click", (event) => {
-        isOpen = !isOpen; // при каждом клике на кнопку переключает между true и false
+    const catalogModalSwitch = () => {
+        isOpen = !isOpen; // при исполнении переключает между true и false
 
         if(isOpen) {
             catalogModal.style.display = "block";
         } else {
             catalogModal.style.display = "";
         }
+    };
+
+    catalogButton.addEventListener("click", () => {
+        catalogModalSwitch();
     });
 
     catalogModalItem.forEach((item) => {
-        item.addEventListener("click", (event) => {
+        item.addEventListener("click", () => {
             const text = item.textContent;
 
             getData().then((data) => {
@@ -29,6 +33,7 @@ const catalog = () => {
                 // и text выбранного фильтра в функцию categoryFilter()
                 // отфильтрованные по text данные передаются в renderGoods()
             });
+            catalogModalSwitch(); // закроет окно каталога
         });
     });
 };
