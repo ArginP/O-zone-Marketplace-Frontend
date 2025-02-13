@@ -10,7 +10,9 @@ const cart = () => {
     const cartConfirmButton = document.querySelector(".cart-confirm");
     const goodsContainer = document.querySelector(".goods");
     const cartWrapper = document.querySelector(".cart-wrapper");
+    const cartItemCount = document.querySelector(".counter");
 
+// Функция для открытия модального окна корзины
     const openCartModal = () => {
         const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
         // В localStorage есть массив cart? Да - используем его, перепарсив из строки. Нет? Создаем пустой
@@ -48,10 +50,11 @@ const cart = () => {
             }); // Находим объект нужного товара в массиве по ключу ID, и возвращаем его
             // В массиве goods ID представлены в виде строк, а не чисел
 
-            cart.push(goodItem); // Добавляем в массив push объект goodItem
+            cart.push(goodItem); // Добавляет в массив push объект goodItem
 
             localStorage.setItem('cart', JSON.stringify(cart));
             // Записываем массив cart в localStorage в виде строки
+            updateCartItemCount(); // Обновляет счетчик товаров в корзине
         }
     });
 
@@ -68,7 +71,8 @@ const cart = () => {
 
             localStorage.setItem('cart', JSON.stringify(cart));
 
-            renderCart(cart);
+            renderCart(cart); // Перерисовывает поле товаров в корзине
+            updateCartItemCount(); // Обновляет счетчик товаров в корзине
             cartTotal.textContent = cart.reduce((sum, goodItem) => {
                 return sum + goodItem.price;
             }, 0);
@@ -76,15 +80,15 @@ const cart = () => {
     });
 
 // Логика кнопки оформить заказ
-    cartConfirmButton.addEventListener("click", (event) => {
+    cartConfirmButton.addEventListener("click", () => {
         const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
 
         if(cart.length !== 0) { // Проверяет, что в корзине есть товары
             postData(cart).then(() => { // отправить данные корзины на сервер, потом:
                 localStorage.removeItem('cart'); // очистить массив корзины
+                updateCartItemCount(); // Обновляет счетчик товаров в корзине
 
                 cartTotal.textContent = '0'; // сумма товаров = 0
-
                 cartWrapper.innerHTML = ''; // очистить поле корзины
                 cartWrapper.insertAdjacentHTML('beforeend', `
             <div id="cart-empty">
@@ -93,6 +97,16 @@ const cart = () => {
             });
         }
     });
+
+// Обновление счетчика товаров в корзине
+    const updateCartItemCount = () => {
+        const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+        // Проверяем, если ли корзина, чтобы избежать ошибки cart = NULL
+        cartItemCount.textContent = cart.length;
+    };
+
+    updateCartItemCount();
+    // Первичный вызов при загрузке страницы, чтобы показывать актуальное количество товаров в корзине
 };
 
 export default cart;
